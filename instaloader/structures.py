@@ -1414,7 +1414,7 @@ class Hashtag:
         The number of posts with a certain hashtag may differ from the number of posts that can actually be accessed, as
         the hashtag count might include private posts
         """
-        return self._metadata("edge_hashtag_to_media", "count")
+        return self._metadata("media_count")
 
     def get_posts(self) -> Iterator[Post]:
         """Yields the posts associated with this hashtag."""
