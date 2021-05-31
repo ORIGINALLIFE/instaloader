@@ -224,14 +224,14 @@ class Post:
         """Timestamp when the post was created (local time zone)."""
         return datetime.fromtimestamp(self._node["date"]
                                       if "date" in self._node
-                                      else self._node["taken_at_timestamp"])
+                                      else self._node["device_timestamp"])
 
     @property
     def date_utc(self) -> datetime:
         """Timestamp when the post was created (UTC)."""
         return datetime.utcfromtimestamp(self._node["date"]
                                          if "date" in self._node
-                                         else self._node["taken_at_timestamp"])
+                                         else self._node["device_timestamp"])
 
     @property
     def date(self) -> datetime:
@@ -1049,12 +1049,12 @@ class StoryItem:
     @property
     def date_local(self) -> datetime:
         """Timestamp when the StoryItem was created (local time zone)."""
-        return datetime.fromtimestamp(self._node['taken_at_timestamp'])
+        return datetime.fromtimestamp(self._node['device_timestamp'])
 
     @property
     def date_utc(self) -> datetime:
         """Timestamp when the StoryItem was created (UTC)."""
-        return datetime.utcfromtimestamp(self._node['taken_at_timestamp'])
+        return datetime.utcfromtimestamp(self._node['device_timestamp'])
 
     @property
     def date(self) -> datetime:
