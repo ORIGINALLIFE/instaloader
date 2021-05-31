@@ -1418,8 +1418,8 @@ class Hashtag:
 
     def get_posts(self) -> Iterator[Post]:
         """Yields the posts associated with this hashtag."""
-        self._metadata("edge_hashtag_to_media", "edges")
-        self._metadata("edge_hashtag_to_media", "page_info")
+        # self._metadata("edge_hashtag_to_media", "edges")
+        # self._metadata("edge_hashtag_to_media", "page_info")
 
         sections = self._metadata("recent", "sections")
         for section in sections:
