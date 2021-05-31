@@ -1400,9 +1400,11 @@ class Hashtag:
                     for edge in self._metadata("edge_hashtag_to_related_tags", "edges"))
 
     def get_top_posts(self) -> Iterator[Post]:
-        """Yields the top posts of the hashtag."""
-        yield from (Post(self._context, edge["node"])
-                    for edge in self._metadata("edge_hashtag_to_top_posts", "edges"))
+        sections = self._metadata("top", "sections")
+        for section in sections:
+            """Yields the top posts of the hashtag."""
+            yield from (Post(self._context, post) for post in section['layout_content']['medias'])
+
 
     @property
     def mediacount(self) -> int:
@@ -1418,12 +1420,17 @@ class Hashtag:
         """Yields the posts associated with this hashtag."""
         self._metadata("edge_hashtag_to_media", "edges")
         self._metadata("edge_hashtag_to_media", "page_info")
-        conn = self._metadata("edge_hashtag_to_media")
-        yield from (Post(self._context, edge["node"]) for edge in conn["edges"])
-        while conn["page_info"]["has_next_page"]:
-            data = self._query({'__a': 1, 'max_id': conn["page_info"]["end_cursor"]})
-            conn = data["edge_hashtag_to_media"]
-            yield from (Post(self._context, edge["node"]) for edge in conn["edges"])
+
+        sections = self._metadata("recent", "sections")
+        for section in sections:
+            yield from (Post(self._context, post) for post in section['layout_content']['medias'])
+        # conn = self._metadata("edge_hashtag_to_media")
+        # yield from (Post(self._context, edge["node"]) for edge in conn["edges"])
+        while self._metadata("recent")['next_max_id']:
+            data = self._query({'__a': 1, 'max_id': self._metadata("recent")['next_max_id']})
+            child_sections = data["recent"]['sections']
+            for child_section in child_sections:
+                yield from (Post(self._context, post) for post in child_section)
 
     def get_all_posts(self) -> Iterator[Post]:
         """Yields all posts, i.e. all most recent posts and the top posts, in almost-chronological order."""
