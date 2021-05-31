@@ -1333,7 +1333,11 @@ class Hashtag:
         try:
             return self._context.get_json("explore/tags/{0}/".format(self.name), params)["graphql"]["hashtag"]
         except:
-            return self._context.get_json("explore/tags/{0}/".format(self.name), params)["data"]
+            data = self._context.get_json("explore/tags/{0}/".format(self.name), params)["data"]
+            for section in data['recent']['sections']:
+                for post in section['layout_content']['medias']:
+                    del post['media']['image_versions2']
+            return
 
     def _obtain_metadata(self):
         if not self._has_full_metadata:
