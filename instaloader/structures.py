@@ -1337,7 +1337,7 @@ class Hashtag:
             for section in data['recent']['sections']:
                 for post in section['layout_content']['medias']:
                     del post['media']['image_versions2']
-            return
+            return data
 
     def _obtain_metadata(self):
         if not self._has_full_metadata:
