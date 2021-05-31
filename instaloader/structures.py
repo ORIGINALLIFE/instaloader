@@ -1329,8 +1329,10 @@ class Hashtag:
         return self._node["name"].lower()
 
     def _query(self, params):
-        print(self._context.get_json("explore/tags/{0}/".format(self.name), params))
-        return self._context.get_json("explore/tags/{0}/".format(self.name), params)["entry_data"]["TagPage"][0]["graphql"]["hashtag"]
+        try:
+            return self._context.get_json("explore/tags/{0}/".format(self.name), params)["graphql"]["hashtag"]
+        except:
+            return self._context.get_json("explore/tags/{0}/".format(self.name), params)["data"]
 
     def _obtain_metadata(self):
         if not self._has_full_metadata:
