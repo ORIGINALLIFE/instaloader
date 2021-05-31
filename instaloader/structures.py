@@ -366,7 +366,7 @@ class Post:
     @property
     def is_video(self) -> bool:
         """True if the Post is a video."""
-        return self._node['is_video']
+        return self._node['media_type'] == 8
 
     @property
     def video_url(self) -> Optional[str]:
