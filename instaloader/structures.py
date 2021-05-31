@@ -1329,15 +1329,10 @@ class Hashtag:
         return self._node["name"].lower()
 
     def _query(self, params):
-        self._context.log('query')
         try:
             return self._context.get_json("explore/tags/{0}/".format(self.name), params)["graphql"]["hashtag"]
         except:
-            data = self._context.get_json("explore/tags/{0}/".format(self.name), params)["data"]
-            for section in data['recent']['sections']:
-                for post in section['layout_content']['medias']:
-                    del post['media']['image_versions2']
-            return data
+            return self._context.get_json("explore/tags/{0}/".format(self.name), params)["data"]
 
     def _obtain_metadata(self):
         if not self._has_full_metadata:
@@ -1405,8 +1400,7 @@ class Hashtag:
                     for edge in self._metadata("edge_hashtag_to_related_tags", "edges"))
 
     def get_top_posts(self) -> Iterator[Post]:
-        sections = self._metadata("top", "sections")
-        for section in sections:
+        for section in self._metadata("top", "sections"):
             """Yields the top posts of the hashtag."""
             yield from (Post(self._context, post['media']) for post in section['layout_content']['medias'])
 
@@ -1422,19 +1416,11 @@ class Hashtag:
 
     def get_posts(self) -> Iterator[Post]:
         """Yields the posts associated with this hashtag."""
-        self._context.log('get_posts')
-        sections = self._metadata("recent", "sections")
-        for section in sections:
-            self._context.log('get_posts:yield')
-            self._context.log(self._context)
-            for post in section['layout_content']['medias']:
-                self._context.log(post['media'])
+        for section in self._metadata("recent", "sections"):
             yield from (Post(self._context, post['media']) for post in section['layout_content']['medias'])
-        self._context.log('before next_max_id')
         while self._metadata("recent")['next_max_id']:
             data = self._query({'__a': 1, 'max_id': self._metadata("recent")['next_max_id']})
-            child_sections = data["recent"]['sections']
-            for child_section in child_sections:
+            for child_section in data["recent"]['sections']:
                 yield from (Post(self._context, post['media']) for post in child_section['layout_content']['medias'])
 
     def get_all_posts(self) -> Iterator[Post]:
