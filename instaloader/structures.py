@@ -1421,7 +1421,9 @@ class Hashtag:
         self._context.log('get_posts')
         sections = self._metadata("recent", "sections")
         for section in sections:
+            self._context.log('get_posts:yield')
             yield from (Post(self._context, post['media']) for post in section['layout_content']['medias'])
+        self._context.log('before next_max_id')
         while self._metadata("recent")['next_max_id']:
             data = self._query({'__a': 1, 'max_id': self._metadata("recent")['next_max_id']})
             child_sections = data["recent"]['sections']
