@@ -1329,6 +1329,7 @@ class Hashtag:
         return self._node["name"].lower()
 
     def _query(self, params):
+        self._context.log('query')
         try:
             return self._context.get_json("explore/tags/{0}/".format(self.name), params)["graphql"]["hashtag"]
         except:
@@ -1405,7 +1406,6 @@ class Hashtag:
             """Yields the top posts of the hashtag."""
             yield from (Post(self._context, post['media']) for post in section['layout_content']['medias'])
 
-
     @property
     def mediacount(self) -> int:
         """
@@ -1418,14 +1418,10 @@ class Hashtag:
 
     def get_posts(self) -> Iterator[Post]:
         """Yields the posts associated with this hashtag."""
-        # self._metadata("edge_hashtag_to_media", "edges")
-        # self._metadata("edge_hashtag_to_media", "page_info")
-
+        self._context.log('get_posts')
         sections = self._metadata("recent", "sections")
         for section in sections:
             yield from (Post(self._context, post['media']) for post in section['layout_content']['medias'])
-        # conn = self._metadata("edge_hashtag_to_media")
-        # yield from (Post(self._context, edge["node"]) for edge in conn["edges"])
         while self._metadata("recent")['next_max_id']:
             data = self._query({'__a': 1, 'max_id': self._metadata("recent")['next_max_id']})
             child_sections = data["recent"]['sections']
