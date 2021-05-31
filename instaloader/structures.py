@@ -1403,7 +1403,7 @@ class Hashtag:
         sections = self._metadata("top", "sections")
         for section in sections:
             """Yields the top posts of the hashtag."""
-            yield from (Post(self._context, post) for post in section['layout_content']['medias'])
+            yield from (Post(self._context, post['media']) for post in section['layout_content']['medias'])
 
 
     @property
@@ -1423,14 +1423,14 @@ class Hashtag:
 
         sections = self._metadata("recent", "sections")
         for section in sections:
-            yield from (Post(self._context, post) for post in section['layout_content']['medias'])
+            yield from (Post(self._context, post['media']) for post in section['layout_content']['medias'])
         # conn = self._metadata("edge_hashtag_to_media")
         # yield from (Post(self._context, edge["node"]) for edge in conn["edges"])
         while self._metadata("recent")['next_max_id']:
             data = self._query({'__a': 1, 'max_id': self._metadata("recent")['next_max_id']})
             child_sections = data["recent"]['sections']
             for child_section in child_sections:
-                yield from (Post(self._context, post) for post in child_section)
+                yield from (Post(self._context, post['media']) for post in child_section['layout_content']['medias'])
 
     def get_all_posts(self) -> Iterator[Post]:
         """Yields all posts, i.e. all most recent posts and the top posts, in almost-chronological order."""
