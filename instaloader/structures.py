@@ -1342,8 +1342,8 @@ class Hashtag:
     def _asdict(self):
         json_node = self._node.copy()
         # remove posts
-        # json_node.pop("edge_hashtag_to_top_posts", None)
-        # json_node.pop("edge_hashtag_to_media", None)
+        json_node.pop("top", None)
+        json_node.pop("recent", None)
         return json_node
 
     def __repr__(self):
